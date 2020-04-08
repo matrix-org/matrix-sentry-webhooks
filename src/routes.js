@@ -7,6 +7,7 @@ const routes = {
     },
     postEvents: (req, res) => {
         if (!utils.verifySignature(req)) {
+            console.warn('Rejected request without correct signature.');
             res.status(403).end();
             return;
         }
@@ -18,6 +19,8 @@ const routes = {
         }
 
         const roomId = utils.getRoomForProject(event.project);
+
+        console.log(`Sending event to room ${roomId}`);
 
         client.sendEvent(roomId, event);
 
