@@ -6,25 +6,48 @@ const routes = {
         res.send('Hey 👋');
     },
     postEvents: (req, res) => {
-        if (!utils.verifySignature(req)) {
-            console.warn('Rejected request without correct signature.');
-            res.status(403).end();
-            return;
+        let event;
+        let project;
+        if (req.headers['Sentry-Hook-Signature'] !== undefined) {
+            // Integration Platform signed webhook
+            // See https://docs.sentry.io/workflow/integrations/integration-platform/webhooks/
+            if (!utils.verifySignature(req)) {
+                console.warn('Rejected integration platform request without correct signature.');
+                res.status(403).end();
+                return;
+            }
+            event = utils.formatIntegrationPlatformEvent(req.body);
+            project = req.body.data.issue.project.slug;
+        } else {
+            // Legacy webhook integration, requires token
+            if (!utils.verifySecret(req)) {
+                console.warn('Rejected legacy webhook request without correct secret.');
+                res.status(403).end();
+                return;
+            }
+            event = utils.formatLegacyWebhookEvent(req.body);
+            project = req.body.project_slug;
         }
-        const event = utils.formatEvent(req.body);
 
         if (!event) {
-            res.json({'result': 'no event found in payload'});
+            console.warn('No event found in payload');
+            res.json({});
             return;
         }
 
-        const roomId = utils.getRoomForProject(event.project);
+        const roomId = utils.getRoomForProject(project);
+
+        if (!roomId) {
+            console.warn(`No roomId mapping found for project ${project}`);
+            res.json({});
+            return;
+        }
 
         console.log(`Sending event to room ${roomId}`);
 
         client.sendEvent(roomId, event);
 
-        res.json({'result': 'ok'});
+        res.json({});
     },
 };
 

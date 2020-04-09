@@ -1,5 +1,5 @@
 const fixtures = {
-    issue: {
+    integrationPlatformIssue: {
         'action': 'created',
         'actor': {
             'id': 'sentry',
@@ -49,7 +49,47 @@ const fixtures = {
         'installation': {
             'uuid': 'a8e5d37a-696c-4c54-adb5-b3f28d64c7de'
         }
-    }
+    },
+    legacyEvent: {
+        project_name: 'test',
+        message: 'This is an example Python exception',
+        id: '102635',
+        culprit: 'raven.scripts.runner in main',
+        project_slug: 'test',
+        url: 'https://domain.tld/sentry/test/issues/1234/?referrer=webhooks_plugin',
+        level: 'error',
+        triggering_rules: [],
+        event: {
+            stacktrace: [{}],
+            use_rust_normalize: true,
+            extra: [{}],
+            modules: {},
+            _ref_version: 2,
+            _ref: 5,
+            culprit: 'raven.scripts.runner in main',
+            title: 'This is an example Python exception',
+            event_id: '125324325656324623',
+            platform: 'python',
+            version: '5',
+            location: null,
+            template: [{}],
+            logger: '',
+            type: 'default',
+            metadata: [{}],
+            tags: [[]],
+            timestamp: 1586430934.35,
+            user: [{}],
+            fingerprint: [[]],
+            hashes: [[]],
+            received: 1586430934.35,
+            level: 'error',
+            contexts: [{}],
+            request: [{}],
+            logentry: [{}],
+        },
+        project: 'test',
+        logger: null,
+    },
 };
 
 module.exports = fixtures;

@@ -18,10 +18,10 @@ const utils = {
         return roomId;
     },
 
-    /**
+     /**
      * Format payload into a message string.
      */
-    formatEvent: data => {
+    formatIntegrationPlatformEvent: data => {
         let parts = [];
 
         if (data.action !== 'created') {
@@ -39,11 +39,32 @@ const utils = {
         return parts.join(' ');
     },
 
+     /**
+     * Format payload into a message string.
+     */
+    formatLegacyWebhookEvent: data => {
+        let parts = [];
+
+        if (data.level === 'error') {
+            parts.push('<strong><span style="color: #ff0000;">ERROR:</span></strong>');
+        } else {
+            parts.push(`<strong><span style="color: #ff6e2d;">${data.level.toUpperCase()}:</span></strong>`);
+        }
+        parts.push(data.project_name);
+        parts.push('|');
+        parts.push(`<a href="${data.url}">${data.message}</a>`);
+        return parts.join(' ');
+    },
+
     verifySignature: (request) => {
         const hmac = crypto.createHmac('sha256', process.env.SENTRY_CLIENT_SECRET);
         hmac.update(JSON.stringify(request.body), 'utf8');
         const digest = hmac.digest('hex');
         return digest === request.headers['Sentry-Hook-Signature'];
+    },
+
+    verifySecret: (request) => {
+        return request.query.secret === process.env.SENTRY_CLIENT_SECRET;
     },
 };
 

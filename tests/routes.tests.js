@@ -9,6 +9,15 @@ const expect = chai.expect;
 require('dotenv').config({path: '.env.default'});
 
 describe('routes', function() {
+    before(function() {
+        this.clientStub = sinon.stub(client, 'sendEvent').returns(true);
+        this.roomStub = sinon.stub(utils, 'getRoomForProject').returns('!foobar:domain.tld');
+        this.res = {
+            json: sinon.spy(),
+            status: sinon.spy(),
+        };
+    });
+
     describe('getRoot', function() {
         it('waves', function() {
             let req = {};
@@ -23,52 +32,131 @@ describe('routes', function() {
     });
 
     describe('postEvents', function() {
-        before(function() {
-            this.clientStub = sinon.stub(client, 'sendEvent').returns(true);
-            this.utilsStub = sinon.stub(utils, 'verifySignature').returns(true);
-            this.req = {
-                body: fixtures.issue,
-            };
-            this.res = {
-                json: sinon.spy(),
-                status: sinon.spy(),
-            };
+        describe('integration platform issues', () => {
+            before(function() {
+                this.verifyStub = sinon.stub(utils, 'verifySignature').returns(true);
+                this.formatStub = sinon.stub(utils, 'formatIntegrationPlatformEvent').returns('foobar');
+                this.req = {
+                    body: fixtures.integrationPlatformIssue,
+                    headers: {
+                        'Sentry-Hook-Signature': 'foobar',
+                    },
+                };
+            });
+
+            it('calls client sendEvent for each event', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.clientStub.calledOnce).to.be.true;
+            });
+
+            it('calls formatEvent', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.formatStub.calledOnce).to.be.true;
+                expect(this.formatStub.firstCall.args[0]).to.eql(fixtures.integrationPlatformIssue);
+            });
+
+            it('skips if signature verification fails', function() {
+                this.verifyStub.returns(false);
+                try {
+                    routes.postEvents(this.req, this.res);
+                // eslint-disable-next-line no-empty
+                } catch (e) {}
+
+                expect(this.res.status.calledOnce).to.be.true;
+                expect(this.formatStub.calledOnce).to.be.false;
+            });
+
+            it('returns ok', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.res.json.calledOnce).to.be.true;
+                expect(this.res.json.firstCall.args[0]).to.eql({});
+            });
+
+            afterEach(function() {
+                this.verifyStub.resetHistory();
+                this.formatStub.resetHistory();
+                this.verifyStub.returns(true);
+                sinon.resetHistory(this.res.json);
+                sinon.resetHistory(this.res.status);
+            });
+
+            after(function() {
+                this.verifyStub.reset();
+                this.formatStub.reset();
+            });
         });
 
-        it('calls client sendEvent for each event', function() {
-            routes.postEvents(this.req, this.res);
+        describe('legacy webhook events', () => {
+            before(function() {
+                this.formatStub = sinon.stub(utils, 'formatLegacyWebhookEvent').returns('foobar');
+                this.verifyStub = sinon.stub(utils, 'verifySecret').returns(true);
+                this.req = {
+                    body: fixtures.legacyEvent,
+                    query: {
+                        secret: 'foobar',
+                    },
+                    headers: {},
+                };
+            });
 
-            expect(this.clientStub.calledOnce).to.be.true;
+            it('calls client sendEvent for each event', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.clientStub.calledOnce).to.be.true;
+            });
+
+            it('calls formatEvent', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.formatStub.calledOnce).to.be.true;
+                expect(this.formatStub.firstCall.args[0]).to.eql(fixtures.legacyEvent);
+            });
+
+            it('skips if secret verification fails', function() {
+                this.verifyStub.returns(false);
+                try {
+                    routes.postEvents(this.req, this.res);
+                // eslint-disable-next-line no-empty
+                } catch (e) {}
+
+                expect(this.res.status.calledOnce).to.be.true;
+                expect(this.formatStub.calledOnce).to.be.false;
+            });
+
+            it('returns ok', function() {
+                routes.postEvents(this.req, this.res);
+
+                expect(this.res.json.calledOnce).to.be.true;
+                expect(this.res.json.firstCall.args[0]).to.eql({});
+            });
+
+            afterEach(function() {
+                this.formatStub.resetHistory();
+                this.verifyStub.resetHistory();
+                this.verifyStub.returns(true);
+                sinon.resetHistory(this.res.json);
+                sinon.resetHistory(this.res.status);
+            });
+
+            after(function() {
+                this.formatStub.reset();
+                this.verifyStub.reset();
+            });
         });
+    });
 
-        it('calls formatEvent', function() {
-            const formatStub = sinon.stub(utils, 'formatEvent').returns('');
+    afterEach(function() {
+        this.clientStub.resetHistory();
+        this.roomStub.resetHistory();
+        sinon.resetHistory(this.res.json);
+        sinon.resetHistory(this.res.status);
+    });
 
-            routes.postEvents(this.req, this.res);
-
-            expect(formatStub.calledOnce).to.be.true;
-            expect(formatStub.firstCall.args[0]).to.eql(fixtures.issue);
-
-            formatStub.restore();
-        });
-
-        it('returns ok', function() {
-            routes.postEvents(this.req, this.res);
-
-            expect(this.res.json.calledOnce).to.be.true;
-            expect(this.res.json.firstCall.args[0]).to.eql({'result': 'ok'});
-        });
-
-        afterEach(function() {
-            this.clientStub.resetHistory();
-            this.utilsStub.resetHistory();
-            sinon.resetHistory(this.res.json);
-            sinon.resetHistory(this.res.status);
-        });
-
-        after(function() {
-            this.clientStub.reset();
-            this.utilsStub.reset();
-        });
+    after(function() {
+        this.clientStub.reset();
+        this.roomStub.reset();
     });
 });
