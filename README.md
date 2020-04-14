@@ -45,7 +45,7 @@ to a digest sent by Sentry in the request headers.
 
 #### Legacy webhook events
 
-You will need to configure a webhook integration in Alertmanager. 
+You will need to configure a webhook integration in Sentry. 
 Go to project "Settings" -> "Legacy integrations" -> "Webhooks". Enable for the
 project and add an url pointing to your bot, postfixing the url with the query
 parameter `?secret=foobar`, replacing `foobar` with a secret of your choice,
