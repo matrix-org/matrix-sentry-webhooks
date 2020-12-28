@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+* Update dependencies
+
 ## 0.2.0 - 2020-04-09
 
 Add support for legacy webhook events.
