@@ -3,6 +3,8 @@
 ## unreleased
 
 * Update dependencies
+* Use `title` instead of `message` for legacy webhook events
+* Add event `environment` to the room message from legacy webhook events
 
 ## 0.2.0 - 2020-04-09
 

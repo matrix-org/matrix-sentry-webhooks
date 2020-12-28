@@ -50,9 +50,11 @@ const utils = {
         } else {
             parts.push(`<strong><span style="color: #ff6e2d;">${data.level.toUpperCase()}:</span></strong>`);
         }
-        parts.push(data.project_name);
-        parts.push('|');
-        parts.push(`<a href="${data.url}">${data.message}</a>`);
+        parts.push(data.project_name, '|');
+        if (data.environment) {
+            parts.push(data.environment, '|');
+        }
+        parts.push(`<a href="${data.url}">${data.title}</a>`);
         return parts.join(' ');
     },
 
