@@ -7,6 +7,7 @@ const routes = {
     },
     postEvents: (req, res) => {
         let event;
+        console.log(req.body);
         let project;
         if (req.headers['Sentry-Hook-Signature'] !== undefined) {
             // Integration Platform signed webhook
