@@ -18,7 +18,7 @@ const utils = {
         return roomId;
     },
 
-     /**
+    /**
      * Format payload into a message string.
      */
     formatIntegrationPlatformEvent: data => {
@@ -39,7 +39,7 @@ const utils = {
         return parts.join(' ');
     },
 
-     /**
+    /**
      * Format payload into a message string.
      */
     formatLegacyWebhookEvent: data => {
@@ -51,10 +51,29 @@ const utils = {
             parts.push(`<strong><span style="color: #ff6e2d;">${data.level.toUpperCase()}:</span></strong>`);
         }
         parts.push(data.project_name, '|');
-        if (data.environment) {
-            parts.push(data.environment, '|');
+        if (data.event.environment) {
+            parts.push(data.event.environment, '|');
         }
-        parts.push(`<a href="${data.url}">${data.title}</a>`);
+        parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
+        if (data.event.request && data.event.request.url) {
+            parts.push(`<br>Url: <i>${data.event.request.url.replace(/https?:\/\//gi, '')}</i>`);
+            if (data.event.request.headers) {
+                const referer = data.event.request.headers.filter(h => h[0] === 'Referer');
+                if (referer) {
+                    try {
+                        parts.push(`referer <i>${referer[0][1].replace(/https?:\/\//gi, '')}</i>`);
+                    } catch (e) {
+                        parts.push(`referer <i>${JSON.stringify(referer.replace(/https?:\/\//gi, ''))}</i>`);
+                    }
+                }
+            }
+        }
+        if (data.event.contexts && data.event.contexts.browser) {
+            parts.push(`<br>Browser: <i>${JSON.stringify(data.event.contexts.browser)}</i>`);
+        }
+        if (data.event.culprit) {
+            parts.push(`<br>Culprit: <i>${data.event.culprit}</i>`);
+        }
         return parts.join(' ');
     },
 
