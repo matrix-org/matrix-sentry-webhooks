@@ -1,6 +1,6 @@
 {
   "name": "matrix-sentry-webhooks",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Sentry webhooks integration bot for Matrix",
   "engines": {
     "node": ">=10"

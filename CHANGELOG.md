@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 0.3.0 - 2020-12-28
 
 * Update dependencies
 * Use `title` instead of `message` for legacy webhook events
