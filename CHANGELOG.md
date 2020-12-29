@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 0.3.1 - 2020-12-29
 
 * Fix legacy webhook formatting changes from 0.3.0 and add more data,
   including browser, request url and referer, and culprit - if known.
