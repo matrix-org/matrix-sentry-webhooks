@@ -56,19 +56,19 @@ const utils = {
         }
         parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
         if (data.event.request && data.event.request.url) {
-            parts.push(`<br>Url <pre>${data.event.request.url}</pre>`);
+            parts.push(`<br>Url: <i>${data.event.request.url.replace(/https?:\/\//gi, '')}</i>`);
             if (data.event.request.headers) {
                 const referer = data.event.request.headers.filter(h => h[0] === 'Referer');
                 if (referer) {
-                    parts.push(`referer <pre>${referer}</pre>`);
+                    parts.push(`referer <i>${referer[1].replace(/https?:\/\//gi, '')}</i>`);
                 }
             }
         }
         if (data.event.contexts && data.event.contexts.browser) {
-            parts.push(`<br>Browser: <pre>${data.event.contexts.browser}</pre>`);
+            parts.push(`<br>Browser: <i>${JSON.stringify(data.event.contexts.browser)}</i>`);
         }
         if (data.event.culprit) {
-            parts.push(`<br>Culprit: <pre>${data.event.culprit}</pre>`);
+            parts.push(`<br>Culprit: <i>${data.event.culprit}</i>`);
         }
         return parts.join(' ');
     },
