@@ -18,7 +18,7 @@ const utils = {
         return roomId;
     },
 
-     /**
+    /**
      * Format payload into a message string.
      */
     formatIntegrationPlatformEvent: data => {
@@ -39,7 +39,7 @@ const utils = {
         return parts.join(' ');
     },
 
-     /**
+    /**
      * Format payload into a message string.
      */
     formatLegacyWebhookEvent: data => {
@@ -51,10 +51,25 @@ const utils = {
             parts.push(`<strong><span style="color: #ff6e2d;">${data.level.toUpperCase()}:</span></strong>`);
         }
         parts.push(data.project_name, '|');
-        if (data.environment) {
-            parts.push(data.environment, '|');
+        if (data.event.environment) {
+            parts.push(data.event.environment, '|');
         }
-        parts.push(`<a href="${data.url}">${data.title}</a>`);
+        parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
+        if (data.event.request && data.event.request.url) {
+            parts.push(`<br>Url <pre>${data.event.request.url}</pre>`);
+            if (data.event.request.headers) {
+                const referer = data.event.request.headers.filter(h => h[0] === 'Referer');
+                if (referer) {
+                    parts.push(`referer <pre>${referer}</pre>`);
+                }
+            }
+        }
+        if (data.event.contexts && data.event.contexts.browser) {
+            parts.push(`<br>Browser: <pre>${data.event.contexts.browser}</pre>`);
+        }
+        if (data.event.culprit) {
+            parts.push(`<br>Culprit: <pre>${data.event.culprit}</pre>`);
+        }
         return parts.join(' ');
     },
 
