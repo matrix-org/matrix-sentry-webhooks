@@ -58,18 +58,13 @@ const utils = {
         if (data.event.request && data.event.request.url) {
             parts.push(`<br>Url: <i>${data.event.request.url.replace(/https?:\/\//gi, '')}</i>`);
             if (data.event.request.headers) {
-                let referer = data.event.request.headers.filter(h => h[0] === 'Referer');
+                const referer = data.event.request.headers.filter(h => h[0] === 'Referer');
                 if (referer) {
-                    console.log(referer);
-                    console.log(typeof referer);
-                    if (typeof referer === 'string') {
-                        referer = referer.replace(/https?:\/\//gi, '');
-                    } else if (typeof referer == 'object' && referer.length > 1) {
-                        referer = referer[1].replace(/https?:\/\//gi, '');
-                    } else {
-                        referer = JSON.stringify(referer).replace(/https?:\/\//gi, '');
+                    try {
+                        parts.push(`referer <i>${referer[0][1].replace(/https?:\/\//gi, '')}</i>`);
+                    } catch (e) {
+                        parts.push(`referer <i>${JSON.stringify(referer.replace(/https?:\/\//gi, ''))}</i>`);
                     }
-                    parts.push(`referer <i>${referer}</i>`);
                 }
             }
         }
