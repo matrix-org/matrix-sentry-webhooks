@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 - 2020-12-29
+
+* Remove debug printout forgotten in previous release
+
 ## 0.3.1 - 2020-12-29
 
 * Fix legacy webhook formatting changes from 0.3.0 and add more data,
