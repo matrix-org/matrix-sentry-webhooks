@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 0.4.0 - 2020-12-30
 
 * Add `SENTRY_INCLUDE_TAGS` environment value that can be set to a comma delimited
   list of tags from the events to include in legacy webhook event messages.
