@@ -54,6 +54,9 @@ const utils = {
         if (data.event.environment) {
             parts.push(data.event.environment, '|');
         }
+        if (data.event.release) {
+            parts.push(data.event.release, '|');
+        }
         parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
         if (data.event.request && data.event.request.url) {
             parts.push(`<br>Url: <i>${data.event.request.url.replace(/https?:\/\//gi, '')}</i>`);
@@ -73,6 +76,15 @@ const utils = {
         }
         if (data.event.culprit) {
             parts.push(`<br>Culprit: <i>${data.event.culprit}</i>`);
+        }
+        const includeTags = (process.env.SENTRY_INCLUDE_TAGS || '').split(',');
+        if (includeTags) {
+            for (const tag of includeTags) {
+                const tagData = data.event.tags.filter(t => t[0] === tag);
+                if (tagData) {
+                    parts.push(`<br>${tag}: <i>${tagData[0][1]}</i>`);
+                }
+            }
         }
         return parts.join(' ');
     },

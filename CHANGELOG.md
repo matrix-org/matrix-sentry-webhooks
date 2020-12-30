@@ -1,5 +1,11 @@
 # Changelog
 
+## unreleased
+
+* Add `SENTRY_INCLUDE_TAGS` environment value that can be set to a comma delimited
+  list of tags from the events to include in legacy webhook event messages.
+* Add `release` info to the legacy webhook event message, if available in the Sentry event.
+
 ## 0.3.2 - 2020-12-29
 
 * Remove debug printout forgotten in previous release
