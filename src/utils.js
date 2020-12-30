@@ -46,43 +46,43 @@ const utils = {
         let parts = [];
 
         if (data.level === 'error') {
-            parts.push('<strong><span style="color: #ff0000;">ERROR:</span></strong>');
+            parts.push('<strong><span data-mx-color="#ff0000">ERROR:</span></strong>');
         } else {
-            parts.push(`<strong><span style="color: #ff6e2d;">${data.level.toUpperCase()}:</span></strong>`);
+            parts.push(`<strong><span data-mx-color="#ff6e2d">${data.level.toUpperCase()}:</span></strong>`);
         }
         parts.push(data.project_name, '|');
         if (data.event.environment) {
-            parts.push(data.event.environment, '|');
+            parts.push(`<span title="environment">${data.event.environment}</span>`, '|');
         }
         if (data.event.release) {
-            parts.push(data.event.release, '|');
+            parts.push(`<span title="release">${data.event.release}</span>`, '|');
         }
         parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
         if (data.event.request && data.event.request.url) {
-            parts.push(`<br>Url: <i>${data.event.request.url.replace(/https?:\/\//gi, '')}</i>`);
+            parts.push(`<br><b>url</b>: ${data.event.request.url}`);
             if (data.event.request.headers) {
                 const referer = data.event.request.headers.filter(h => h[0] === 'Referer');
                 if (referer) {
                     try {
-                        parts.push(`referer <i>${referer[0][1].replace(/https?:\/\//gi, '')}</i>`);
+                        parts.push(`referer ${referer[0][1]}</i>`);
                     } catch (e) {
-                        parts.push(`referer <i>${JSON.stringify(referer.replace(/https?:\/\//gi, ''))}</i>`);
+                        parts.push(`referer ${JSON.stringify(referer)}</i>`);
                     }
                 }
             }
         }
         if (data.event.contexts && data.event.contexts.browser) {
-            parts.push(`<br>Browser: <i>${JSON.stringify(data.event.contexts.browser)}</i>`);
+            parts.push(`<br><b>browser</b>: ${JSON.stringify(data.event.contexts.browser)}`);
         }
         if (data.event.culprit) {
-            parts.push(`<br>Culprit: <i>${data.event.culprit}</i>`);
+            parts.push(`<br><b>culprit</b>: ${data.event.culprit}`);
         }
         const includeTags = (process.env.SENTRY_INCLUDE_TAGS || '').split(',');
         if (includeTags.length > 0) {
             for (const tag of includeTags) {
                 const tagData = data.event.tags.filter(t => t[0] === tag);
                 if (tagData.length > 0 && tagData[0].length > 1) {
-                    parts.push(`<br>${tag}: <i>${tagData[0][1]}</i>`);
+                    parts.push(`<br><b>${tag}</b>: ${tagData[0][1]}`);
                 }
             }
         }
