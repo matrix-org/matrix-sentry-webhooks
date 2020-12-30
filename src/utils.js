@@ -29,9 +29,9 @@ const utils = {
             return;
         }
         if (data.data.issue.level === 'error') {
-            parts.push('<strong><span style="color: #ff0000;">ERROR:</span></strong>');
+            parts.push('<strong><span data-mx-color="#ff0000"">ERROR:</span></strong>');
         } else {
-            parts.push(`<strong><span style="color: #ff6e2d;">${data.data.issue.level.toUpperCase()}:</span></strong>`);
+            parts.push(`<strong><span data-mx-color="#ff6e2d">${data.data.issue.level.toUpperCase()}:</span></strong>`);
         }
         parts.push(data.data.issue.project.slug);
         parts.push('|');
