@@ -78,10 +78,10 @@ const utils = {
             parts.push(`<br>Culprit: <i>${data.event.culprit}</i>`);
         }
         const includeTags = (process.env.SENTRY_INCLUDE_TAGS || '').split(',');
-        if (includeTags) {
+        if (includeTags.length > 0) {
             for (const tag of includeTags) {
                 const tagData = data.event.tags.filter(t => t[0] === tag);
-                if (tagData) {
+                if (tagData.length > 0 && tagData[0].length > 1) {
                     parts.push(`<br>${tag}: <i>${tagData[0][1]}</i>`);
                 }
             }
