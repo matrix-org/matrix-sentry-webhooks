@@ -93,7 +93,7 @@ const utils = {
         const hmac = crypto.createHmac('sha256', process.env.SENTRY_CLIENT_SECRET);
         hmac.update(JSON.stringify(request.body), 'utf8');
         const digest = hmac.digest('hex');
-        return digest === request.headers['Sentry-Hook-Signature'];
+        return digest === request.headers['sentry-hook-signature'];
     },
 
     verifySecret: (request) => {

@@ -6,10 +6,10 @@ const routes = {
         res.send('Hey 👋');
     },
     postEvents: (req, res) => {
-        console.log(`Method:${req.method}\nURL: ${req.originalUrl}\nBody: ${req.body.data}\nHeaders: ${JSON.stringify(req.headers)}`)
+        console.log(`Method:${req.method}\nURL: ${req.originalUrl}\nBody: ${JSON.stringify(req.body.data)}\nHeaders: ${JSON.stringify(req.headers)}`)
         let event;
         let project;
-        if (req.headers['Sentry-Hook-Signature'] !== undefined) {
+        if (req.headers['sentry-hook-signature'] !== undefined) {
             // Integration Platform signed webhook
             // See https://docs.sentry.io/workflow/integrations/integration-platform/webhooks/
             if (!utils.verifySignature(req)) {
