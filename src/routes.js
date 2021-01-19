@@ -6,7 +6,7 @@ const routes = {
         res.send('Hey 👋');
     },
     postEvents: (req, res) => {
-        console.log(req)
+        console.log("Request:", req)
         let event;
         let project;
         if (req.headers['Sentry-Hook-Signature'] !== undefined) {
