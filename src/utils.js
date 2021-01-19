@@ -22,12 +22,13 @@ const utils = {
      * Format payload into a message string.
      */
     formatIntegrationPlatformEvent: data => {
+        console.warn('Formatting platform event');
         let parts = [];
 
-        if (data.action !== 'created') {
-            // Ignore other actions for now
-            return;
-        }
+        // if (data.action !== 'created') {
+        //     // Ignore other actions for now
+        //     return;
+        // }
         if (data.data.issue.level === 'error') {
             parts.push('<strong><span data-mx-color="#ff0000"">ERROR:</span></strong>');
         } else {
@@ -35,7 +36,7 @@ const utils = {
         }
         parts.push(data.data.issue.project.slug);
         parts.push('|');
-        parts.push(`<a href="${data.data.issue.web_url}">${data.data.issue.title}</a>`);
+        parts.push(`<a href="https://sentry.io/organizations/dune-analytics/issues/${data.data.issue.id}">${data.data.issue.title}</a>`);
         return parts.join(' ');
     },
 
