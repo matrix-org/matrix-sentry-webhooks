@@ -23,20 +23,21 @@ const utils = {
      */
     formatIntegrationPlatformEvent: data => {
         console.warn('Formatting platform event');
+        const issue = data.data.issue === undefined ? data.data.error : data.data.issue
         let parts = [];
 
         // if (data.action !== 'created') {
         //     // Ignore other actions for now
         //     return;
         // }
-        if (data.data.issue.level === 'error') {
+        if (issue.level === 'error') {
             parts.push('<strong><span data-mx-color="#ff0000"">ERROR:</span></strong>');
         } else {
-            parts.push(`<strong><span data-mx-color="#ff6e2d">${data.data.issue.level.toUpperCase()}:</span></strong>`);
+            parts.push(`<strong><span data-mx-color="#ff6e2d">${issue.level.toUpperCase()}:</span></strong>`);
         }
-        parts.push(data.data.issue.project.slug);
+        parts.push(issue.project.slug);
         parts.push('|');
-        parts.push(`<a href="https://sentry.io/organizations/dune-analytics/issues/${data.data.issue.id}">${data.data.issue.title}</a>`);
+        parts.push(`<a href="https://sentry.io/organizations/dune-analytics/issues/${issue.id}">${issue.title}</a>`);
         return parts.join(' ');
     },
 
