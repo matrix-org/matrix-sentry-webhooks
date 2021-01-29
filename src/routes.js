@@ -1,5 +1,6 @@
 const client = require('./client');
 const utils = require('./utils');
+const data = require('./data');
 
 const routes = {
     getRoot: (req, res) => {
@@ -10,6 +11,10 @@ const routes = {
         let event;
         let project;
         if (req.headers['sentry-hook-signature'] !== undefined) {
+            const issueData = data.getIssueData(req.body)
+            if (!issueData) {
+                return
+            }
             // Integration Platform signed webhook
             // See https://docs.sentry.io/workflow/integrations/integration-platform/webhooks/
             if (!utils.verifySignature(req)) {
@@ -17,8 +22,9 @@ const routes = {
                 res.status(403).end();
                 return;
             }
-            event = utils.formatIntegrationPlatformEvent(req.body);
-            project = req.body.data.issue.project.slug;
+            console.log("REQUEST body: ", JSON.stringify(req.body))
+            event = utils.formatIntegrationPlatformEvent(issueData);
+            project = issueData.project
         } else {
             // Legacy webhook integration, requires token
             if (!utils.verifySecret(req)) {

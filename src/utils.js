@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const data = require('./data');
 
 const utils = {
     /**
@@ -21,23 +22,25 @@ const utils = {
     /**
      * Format payload into a message string.
      */
-    formatIntegrationPlatformEvent: data => {
+    formatIntegrationPlatformEvent: issueData => {
         console.warn('Formatting platform event');
-        const issue = data.data.issue === undefined ? data.data.error : data.data.issue
+        const { project, level, title, issueURL, status, type } = issueData
         let parts = [];
 
-        // if (data.action !== 'created') {
-        //     // Ignore other actions for now
-        //     return;
-        // }
-        if (issue.level === 'error') {
-            parts.push('<strong><span data-mx-color="#ff0000"">ERROR:</span></strong>');
-        } else {
-            parts.push(`<strong><span data-mx-color="#ff6e2d">${issue.level.toUpperCase()}:</span></strong>`);
+        if (status === 'resolved') {
+            parts.push(`<strong><span data-mx-color="#00FF00">✅ RESOLVED:</span></strong>`);
         }
-        parts.push(issue.project.slug);
+        else if (['error', 'fatal'].includes(level)) {
+            parts.push(`<strong><span data-mx-color="#ff0000"">☠️ ${level.toUpperCase()}:</span></strong>`);
+        }
+        else {
+            parts.push(`<strong><span data-mx-color="#ff6e2d">${level.toUpperCase()}:</span></strong>`);
+        }
+        parts.push(project);
         parts.push('|');
-        parts.push(`<a href="https://sentry.io/organizations/dune-analytics/issues/${issue.id}">${issue.title}</a>`);
+        parts.push(`<a href="${issueURL}">${title}</a>`);
+        parts.push('|');
+        parts.push(type);
         return parts.join(' ');
     },
 
