@@ -24,7 +24,7 @@ const utils = {
      */
     formatIntegrationPlatformEvent: issueData => {
         console.warn('Formatting platform event');
-        const { project, level, title, issueURL, status, type } = issueData
+        const { project, level, title, issueUrl, status, type } = issueData
         let parts = [];
 
         if (status === 'resolved') {
@@ -38,10 +38,12 @@ const utils = {
         }
         parts.push(project);
         parts.push('|');
-        parts.push(`<a href="${issueURL}">${title}</a>`);
+        parts.push(`<a href="${issueUrl}">${title}</a>`);
         parts.push('|');
         parts.push(type);
-        return parts.join(' ');
+        let final = parts.join(' ');
+        console.log("\nConstructed html for message:\n ", final)
+        return final
     },
 
     /**

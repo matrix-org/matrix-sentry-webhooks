@@ -22,7 +22,8 @@ const routes = {
                 res.status(403).end();
                 return;
             }
-            console.log("REQUEST body: ", JSON.stringify(req.body))
+            console.log("\nREQUEST body:\n", JSON.stringify(req.body))
+            console.log("\nextracted_payload:\n ", JSON.stringify(issueData))
             event = utils.formatIntegrationPlatformEvent(issueData);
             project = issueData.project
         } else {
