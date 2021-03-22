@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+* Don't linkify the whole event title.
+
 ## 0.4.0 - 2020-12-30
 
 * Add `SENTRY_INCLUDE_TAGS` environment value that can be set to a comma delimited

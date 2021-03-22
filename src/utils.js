@@ -35,7 +35,7 @@ const utils = {
         }
         parts.push(data.data.issue.project.slug);
         parts.push('|');
-        parts.push(`<a href="${data.data.issue.web_url}">${data.data.issue.title}</a>`);
+        parts.push(`${data.data.issue.title} <a href="${data.data.issue.web_url}">(event)</a>`);
         return parts.join(' ');
     },
 
@@ -57,7 +57,7 @@ const utils = {
         if (data.event.release) {
             parts.push(`<span title="release">${data.event.release}</span>`, '|');
         }
-        parts.push(`<a href="${data.url}">${data.event.title || data.message}</a>`);
+        parts.push(`${data.event.title || data.message} (<a href="${data.url}">event</a>)`);
         if (data.event.request && data.event.request.url) {
             parts.push(`<br><b>url</b>: ${data.event.request.url}`);
             if (data.event.request.headers) {
