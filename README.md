@@ -27,6 +27,8 @@ The Docker image is the easiest way to get the service running.
 Ensure you set the required environment variables listed in `.env.default` in this 
 repository.
 
+Docker images can be found on [Docker Hub](https://hub.docker.com/r/matrixdotorg/matrix-sentry-webhooks).
+
 ### Sentry
 
 The URL for both Integration Platform events and legacy webhook events is the following,
