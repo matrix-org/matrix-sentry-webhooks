@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 0.5.0 - 2021-03-23
 
 * Don't linkify the whole event title.
 
